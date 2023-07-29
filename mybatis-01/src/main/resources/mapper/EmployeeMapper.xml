@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ydl.mapper.EmployeeMapper">
+
+<!--    结果集映射，column 对应数据库列名，property对应实体类属性，除了id属性，其他都用result-->
+    <resultMap id="employeeMap" type="employee">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+
+        <association property="dept" column="did" javaType="Dept"
+                     select="com.ydl.mapper.DeptMapper.select">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="employeeMap2" type="employee">
+        <id column="eid" property="id"/>
+        <result column="ename" property="name"/>
+        <association property="dept" javaType="Dept">
+            <id column="did" property="id"/>
+            <result column="dname" property="name"/>
+        </association>
+    </resultMap>
+
+
+
+<!--    sql片段-->
+    <sql id="sql">
+        id,name,did
+    </sql>
+
+
+
+    <select id="select" resultMap="employeeMap">
+        select <include refid="sql"/>
+        from employee
+
+    </select>
+
+    <select id="select2" resultMap="employeeMap2">
+        select e.id eid,e.name ename,d.id did,d.name dname
+        from employee e left join dept d on e.did = d.id
+
+    </select>
+
+    <select id="selectByDid" resultMap="employeeMap2">
+        select id eid,name ename
+        from employee
+        where did = #{did}
+    </select>
+
+
+</mapper>

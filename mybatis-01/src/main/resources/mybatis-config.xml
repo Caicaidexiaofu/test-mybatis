@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <properties>
+        <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/ssm?useUnicode=true&amp;characterEncoding=utf8&amp;userSSl=false&amp;serverTimeZone=Asia/Shanghai"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </properties>
+
+    <settings>
+        <!-- 开启驼峰命名规则 可以不用再mapper里写结果集映射-->
+<!--        <setting name="mapUnderscoreToCameCase" value="true"/>-->
+
+        <!-- 延迟加载的全局开关。当开启时，所有关联对象都会延迟加载。 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- 开启时，任一方法的调用都会加载该对象的所有延迟加载属性。 否则，每个延迟加载属性会按需加载 -->
+        <setting name="aggressiveLazyLoading" value="false"/>
+    </settings>
+
+<!--    别名系统，再xml里直接使用别名更方便-->
+    <typeAliases>
+        <typeAlias type="com.ydl.dataSource.DruidDataSourceFactory" alias="DRUID"/>
+        <!--单个类配置-->
+<!--        <typeAlias type="com.ydl.entity.User" alias="user"/>-->
+        <!--按包来配置，包下所有的类都配置一个别名-->
+        <package name="com.ydl.entity"/>
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="mapper/UserMapper.xml"/>
+        <mapper resource="mapper/EmployeeMapper.xml"/>
+        <mapper resource="mapper/DeptMapper.xml"/>
+        <mapper class="com.ydl.mapper.AdminMapper"/>
+    </mappers>
+
+</configuration>

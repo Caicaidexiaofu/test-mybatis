@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ydl.mapper.UserMapper">
+
+<!--    结果集映射，column 对应数据库列名，property对应实体类属性，除了id属性，其他都用result-->
+    <resultMap id="userMap" type="user">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+    </resultMap>
+
+<!--    sql片段-->
+    <sql id="sql">
+        id,username,password
+    </sql>
+
+
+    <!--查询相关--> <!--resultMap与上面的对应，等价与resultType 里的全限定名-->
+    <select id="selectAll" resultMap="userMap">
+        select <include refid="sql"/>
+        from user
+    </select>
+    <!--通过id查询-->
+    <select id="selectById" resultMap="userMap">
+        select <include refid="sql"/>
+        from user
+        where id = #{id}
+    </select>
+    <!--多个参数查询-->
+    <select id="selects" resultMap="userMap">
+        select <include refid="sql"/>
+        from user
+        where username = #{username} and password = #{password}
+    </select>
+    <!--对象作为参数查询-->
+    <select id="selectByUser" resultMap="userMap">
+        select <include refid="sql"/>
+        from user
+        <where>
+            <if test="id != null">
+                and `id` = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and `username` = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and `password` = #{password}
+            </if>
+        </where>
+    </select>
+    <!--map作为参数查询-->
+    <select id="selectByMap" resultMap="userMap">
+        select <include refid="sql"/>
+        from user
+        where username = #{username} and password = #{password}
+    </select>
+    <!--模糊查询-->
+    <select id="selectObscure" resultMap="userMap">
+        select <include refid="sql"/>
+        from user
+        where username like '%${asf}%'
+    </select>
+
+<!--    插入相关-->
+    <insert id="insert">
+        insert into user(<include refid="sql"/>)
+        values(#{id},#{username},#{password})
+    </insert>
+<!--    批量插入-->
+    <insert id="batchInsert" parameterType="list">
+        insert into user(<include refid="sql"/>)
+        values
+        <foreach collection="users" item="user" separator=",">
+            (#{user.id},#{user.username},#{user.password})
+        </foreach>
+    </insert>
+
+<!--    更新-->
+    <update id="update">
+        update user
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+<!--    删除操作-->
+    <delete id="delete">
+        delete from user where id = #{id}
+    </delete>
+<!--    批量删除-->
+    <delete id="deleteByIds">
+        delete from user where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    
+    
+    
+
+
+
+
+</mapper>
